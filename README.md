@@ -25,3 +25,7 @@ This was built using the following tools, which sort of explains why it's such a
   lng: -2.1731309 
 }
 ```
+
+The result will look something like this:
+
+![grouped schools](https://i.imgur.com/d91Otsw.png)
