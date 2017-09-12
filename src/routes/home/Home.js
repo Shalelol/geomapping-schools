@@ -32,16 +32,17 @@ const SimpleMapExampleGoogleMap = withGoogleMap(props => (
   >
     {props.markers.map((m, i) => (
       <div>
-        <Marker position={{lat: m.lat, lng: m.lng}} title={JSON.stringify(m)} icon={{
+        <Marker position={{lat: m.lat, lng: m.lng}} 
+          title={`${m.name} \n ${m.type} \n ${m.organisationSubType}` } icon={{
           path: google.maps.SymbolPath.CIRCLE,
           strokeColor: colors[i],
           scale: 4
         }} />
         {m.visits.map(v => (
-          <Marker position={{lat: v.lat, lng: v.lng}} title={JSON.stringify(v)} icon={{
-            path: google.maps.SymbolPath.CIRCLE,
+          <Marker position={{lat: v.lat, lng: v.lng}} title={`${v.name} \n ${v.type} \n ${v.organisationSubType}` }icon={{
+            path: (v.type === "Customer" ? google.maps.SymbolPath.BACKWARD_CLOSED_ARROW : google.maps.SymbolPath.FORWARD_OPEN_ARROW),
             strokeColor: colors[i],
-            scale: 3
+            scale: 4
         }} />
         ))}
       </div>
@@ -71,8 +72,6 @@ export default class SimpleMapExample extends Component {
       _.each(c.visits, s => csvString += this.buildCsvEntry(s, i));
     })
       
-
-    console.log(csvString);
     var encodedUri = encodeURI(csvString);
     var link = document.createElement("a");
     link.setAttribute("href", encodedUri);

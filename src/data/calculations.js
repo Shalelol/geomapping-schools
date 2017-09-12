@@ -3,13 +3,18 @@ import _ from "lodash";
 import schools from "../constants/schools";
 
 const FE_COLLEGE = "FE College";
+const CUSTOMER = "Customer";
 
 const getFeColleges = function() {
     return _.filter(schools, school => school.organisationSubType === FE_COLLEGE);
 }
 
 const getSchoolsToVisit = function () {
-    return _.filter(schools, school => school.organisationSubType !== FE_COLLEGE);
+    return _.filter(schools, school => school.organisationSubType !== FE_COLLEGE && school.type !== CUSTOMER);
+}
+
+const getLowUsageSchools = function() {
+    return _.filter(schools, school => school.organisationSubType !== FE_COLLEGE && school.type === CUSTOMER);
 }
 
 function distanceFormula(lat1, lon1, lat2, lon2) {
@@ -31,10 +36,21 @@ const distance = function(from, to) {
 const runCalculations = function() {
     const feColleges = getFeColleges();
     const schoolsToVisit = getSchoolsToVisit();
+    const lowUsageSchools = getLowUsageSchools();
 
     _.each(feColleges, feCollege => {
         var sorted = _.orderBy(schoolsToVisit, school => distance(school, feCollege));
         feCollege.visits = _.take(sorted, 2);
+    });
+
+    
+    _.each(feColleges, feCollege => {
+        var maxDistance = _.max(_.map(feCollege.visits, school => distance(school, feCollege)));
+        console.log(feCollege, maxDistance);
+        _.each(lowUsageSchools, school => {
+            if(distance(school, feCollege) < maxDistance * 2)
+                feCollege.visits.push(school);
+        });    
     });
     return feColleges;
 }
